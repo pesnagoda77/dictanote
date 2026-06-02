@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EHC Studio Logo</title>
+    <style>
+        body {
+            margin: 0;
+            background: #0a0a0a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+        }
+        .logo-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+            padding: 20px;
+            background: #111;
+            border-radius: 12px;
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.1);
+        }
+        .grid-cell {
+            width: 40px;
+            height: 40px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+        .grid-cell:hover {
+            transform: scale(1.1);
+        }
+        .star {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            color: #FFD700;
+            filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.6));
+        }
+        .logo-text {
+            font-size: 72px;
+            font-weight: 900;
+            letter-spacing: 12px;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 50%, #FFD700 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+            margin-top: 20px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #888;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+        }
+        .stars-container {
+            position: relative;
+            width: 100%;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <div class="stars-container">
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+        </div>
+        
+        <div class="logo-grid" id="grid"></div>
+        
+        <div class="logo-text">EHC</div>
+        <div class="subtitle">Studio</div>
+        
+        <div class="stars-container">
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+            <svg class="star" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z"/>
+            </svg>
+        </div>
+    </div>
+
+    <script>
+        // Generate 7x7 grid with gray gradient
+        const grid = document.getElementById('grid');
+        const cells = [];
+        
+        // Create gradient pattern - darker in center, lighter at edges
+        for (let i = 0; i < 7; i++) {
+            for (let j = 0; j < 7; j++) {
+                const cell = document.createElement('div');
+                cell.className = 'grid-cell';
+                
+                // Calculate distance from center (3,3)
+                const distFromCenter = Math.sqrt((i-3)**2 + (j-3)**2);
+                const maxDist = Math.sqrt(18); // ~4.24
+                
+                // Normalize to 0-1
+                const normalized = distFromCenter / maxDist;
+                
+                // Gray gradient: darker center (0.2), lighter edges (0.8)
+                const grayValue = Math.floor(40 + normalized * 120);
+                cell.style.backgroundColor = `rgb(${grayValue}, ${grayValue}, ${grayValue})`;
+                
+                // Add subtle border
+                cell.style.border = `1px solid rgb(${grayValue + 20}, ${grayValue + 20}, ${grayValue + 20})`;
+                
+                grid.appendChild(cell);
+                cells.push(cell);
+            }
+        }
+        
+        // Add hover effect - light up cells
+        cells.forEach((cell, index) => {
+            cell.addEventListener('mouseenter', () => {
+                // Light up this cell and neighbors
+                const row = Math.floor(index / 7);
+                const col = index % 7;
+                
+                cells.forEach((c, i) => {
+                    const r = Math.floor(i / 7);
+                    const c_col = i % 7;
+                    const dist = Math.sqrt((r-row)**2 + (c_col-col)**2);
+                    
+                    if (dist < 2) {
+                        const brightness = 1 - (dist / 2);
+                        c.style.filter = `brightness(${1 + brightness * 0.5})`;
+                    }
+                });
+            });
+            
+            cell.addEventListener('mouseleave', () => {
+                cells.forEach(c => {
+                    c.style.filter = 'brightness(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
