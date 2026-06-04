@@ -36,3 +36,15 @@
 
 ## Архив
 - [DONE] APK — package name mismatch fix (2026-05-26)
+
+## AGT-20250604-050 — Результаты расследования пунктуации v24 (для Итона)
+- **Статус:** НАЙДЕНА ПРИЧИНА — ждёт фикс
+- **Проблема:** Пунктуация есть в быстрой транскрибации (превью), но НЕТ в полной транскрибации (диалог)
+- **Тест:** v24 на коротком файле — заглавные и точки видны в превью, но не в диалоге. Длинный файл — никак.
+- **Рут-коза:**
+  - Быстрая транскрибация: использует PunctuationService.addPunctuationToText() (переписанный без RegExp + const Set) — работает в AOT
+  - Полная транскрибация: home_page.dart строка 291 использует ЛОКАЛЬНЫЙ метод _addPunctuationToText() (с RegExp + const Set) — AOT убивает его
+- **Фикс:** Заменить home_page.dart:291 — _addPunctuationToText(result.fullText) → PunctuationService.addPunctuationToText(result.fullText)
+- **Также:** Удалить метод _addPunctuationToText и _finishSentence из home_page.dart — они дублируют PunctuationService и мёртвые в AOT
+- **Автор:** Фил
+- **Следующий шаг:** Славан сказал "делай" — жду команды на правку или Итона
