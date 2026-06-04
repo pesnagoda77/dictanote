@@ -1,50 +1,44 @@
-# DictaNote — TODO Фила
+# TODO-PHIL — DictaPro / Master CRM
 
-## Как пользоваться
-- Фил обновляет этот файл при старте работы, изменении статуса, завершении
-- Итон читает но НЕ пишет сюда
+## DictaPro — Гибрид v1 (сделано)
+- [x] Пунктуация в транскрипции
+- [x] Убрана диаризация (ломала слова)
+- [x] Сохранены: custom words, auto-correction, splash, icons
+- [x] APK собран: app-release-hybrid-v1.apk
+
+## DictaPro — Что чинить
+- [ ] Саммари — переписать summary_service.dart (структура, ключевые мысли, выводы)
+
+## Идеи офлайн-фич для DictaPro
+1. **Улучшенное саммари** — структурированный отчёт (темы, выводы, экшн-айтемы)
+2. **Шаблоны саммари** — бизнес-встреча / лекция / интервью / личные заметки
+3. **Поиск по всем записям** — полнотекстовый поиск по транскрипциям
+4. **Категоризация** — авто-разметка записей по темам (офлайн ML)
+5. **Экспорт форматов** — TXT, SRT, Markdown, DOCX
+6. **Offline перевод** — перевод транскрипции на другие языки
+7. **Голосовые команды** — "запиши", "стоп", "саммари" (VOSK wake word)
+8. **Шифрование записей** — защита паролем / PIN
+9. **Теги и папки** — организация записей, а не только избранное
+10. **Статистика использования** — часы записи, распределение по темам
+
+## Master CRM — Что сделано (v2.0.0)
+- [x] Все 11 задач выполнены
+- [x] APK: D:\Projects\Releases\master_crm_v2.0.0_android\master_crm_v2.0.0.apk
+
+## Репозитории
+- DictaPro: нужно проверить git status
+- Master CRM: https://github.com/pesnagoda77/master-crm
 
 ---
-
-## [BLOCKED] APK — транскрипция/саммари/редактор/MP3 НЕ работают в release
-- **Описание:** APK app-release-full.apk запускается, записи создаются/воспроизводятся, но:
-  1. «В текст» (транскрипция) — НЕ срабатывает
-  2. MP3-файл (раньше работавший) — выдаёт ошибку
-  3. Редактор диалога — пустой
-  4. Саммари — не работает
-- **APK:** app-release-full.apk (собран 2026-05-26 23:29 из b42af78, все коммиты включены)
-- **Кто:** Фил + Итон
-- **Причина (предварительная):** ProGuard в release build (`minifyEnabled=true`) удаляет/обфусцирует классы VOSK/flutter. В proguard-rules.pro НЕТ правил для VOSK.
-- **Блокеры:** Нужен фикс ProGuard + пересборка release APK
-- **Статус:** Итон расследует (запущен 23:38). Фил нашёл отсутствие VOSK-правил в proguard.
-
----
-
-## [TODO] IAP — покупка PRO
-- **Описание:** Реализовать разовую покупку PRO-версии
-- **Варианты:** Adapty/IAPHUB vs raw in_app_purchase
-- **Кто:** Фил (Flutter)
-- **Блокеры:** APK должен быть рабочим
-
----
-
-## [DONE] Splash screen + иконка
-- **Дата:** 2026-05-25
-
-## [DONE] Транскрипция — офлайн-модели
-- **Дата:** 2026-05-25
-
-## Архив
-- [DONE] APK — package name mismatch fix (2026-05-26)
 
 ## AGT-20250604-050 — Результаты расследования пунктуации v24 (для Итона)
 - **Статус:** НАЙДЕНА ПРИЧИНА — ждёт фикс
 - **Проблема:** Пунктуация есть в быстрой транскрибации (превью), но НЕТ в полной транскрибации (диалог)
 - **Тест:** v24 на коротком файле — заглавные и точки видны в превью, но не в диалоге. Длинный файл — никак.
 - **Рут-коза:**
-  - Быстрая транскрибация: использует PunctuationService.addPunctuationToText() (переписанный без RegExp + const Set) — работает в AOT
-  - Полная транскрибация: home_page.dart строка 291 использует ЛОКАЛЬНЫЙ метод _addPunctuationToText() (с RegExp + const Set) — AOT убивает его
-- **Фикс:** Заменить home_page.dart:291 — _addPunctuationToText(result.fullText) → PunctuationService.addPunctuationToText(result.fullText)
-- **Также:** Удалить метод _addPunctuationToText и _finishSentence из home_page.dart — они дублируют PunctuationService и мёртвые в AOT
+  - Быстрая транскрибация: использует `PunctuationService.addPunctuationToText()` (переписанный без RegExp + const Set) — работает в AOT
+  - Полная транскрибация: `home_page.dart` строка 291 использует ЛОКАЛЬНЫЙ метод `_addPunctuationToText()` (с RegExp + const Set) — AOT убивает его
+- **Фикс:** Заменить `home_page.dart:291` — `_addPunctuationToText(result.fullText)` → `PunctuationService.addPunctuationToText(result.fullText)`
+- **Также:** Удалить метод `_addPunctuationToText` и `_finishSentence` из `home_page.dart` — они дублируют PunctuationService и мёртвые в AOT
 - **Автор:** Фил
 - **Следующий шаг:** Славан сказал "делай" — жду команды на правку или Итона
